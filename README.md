@@ -8,7 +8,7 @@ Forecast daily solar irradiance (kWh/m²/day) from weather variables to support 
 - Data: `data/nairobi_power_2018_2023.csv` (downloaded via NASA POWER API)
 - Assets (plots + metrics): `assets/`
 - Open in Colab:
-  https://colab.research.google.com/github/sibby-killer/assg_energy_week2.git/blob/main/notebooks/01_solar_potential_regression.ipynb
+  https://colab.research.google.com/github/sibby-killer/assg_energy_week2/blob/main/notebooks/01_solar_potential_regression.ipynb
 
 ## Overview
 - Task: Supervised regression to predict `ALLSKY_SFC_SW_DWN` (daily solar irradiance).
