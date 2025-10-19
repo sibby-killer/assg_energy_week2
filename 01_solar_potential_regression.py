@@ -328,6 +328,7 @@ This supports SDG 7: Affordable and Clean Energy.
   NASA POWER API: https://power.larc.nasa.gov
 
 ## Requirements
+
 - pandas
 - numpy
 - scikit-learn
@@ -338,14 +339,3 @@ This supports SDG 7: Affordable and Clean Energy.
 Path("README.md").write_text(readme, encoding="utf-8")
 print("README.md written. Open the Files panel to preview/download, or commit it via Colab: File → Save a copy in GitHub.")
 
-!ls
-
-!zip -r data.zip data
-
-from google.colab import files
-
-!jupyter nbconvert --to script "/content/01_solar_potential_regression.ipynb" --output app
-
-!jupyter nbconvert --to script 01_solar_potential_regression.ipynb
-
-!ls -lh /content
