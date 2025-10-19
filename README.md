@@ -5,73 +5,128 @@ Forecast daily solar irradiance (kWh/m²/day) from weather variables to support 
 ## Quick links
 - Notebook: `notebooks/01_solar_potential_regression.ipynb`
 - Script: `src/solar_regression.py`
-- Data: `data/nairobi_power_2018_2023.csv` (downloaded via NASA POWER API)
 - Assets (plots + metrics): `assets/`
-- Open in Colab:
-  https://colab.research.google.com/github/sibby-killer/assg_energy_week2/blob/main/notebooks/01_solar_potential_regression.ipynb
+- Open in Colab (update USERNAME/REPO after pushing):  
+  https://colab.research.google.com/github/USERNAME/REPO/blob/main/notebooks/01_solar_potential_regression.ipynb
 
 ## Overview
 - Task: Supervised regression to predict `ALLSKY_SFC_SW_DWN` (daily solar irradiance).
 - Why it matters: Better forecasts help size solar installations, plan storage, and manage grids—key to scaling clean energy.
 
-## Results (from assets/metrics.txt)
+## Results
 - Gradient Boosting Regressor:
-  - MAE: TBD kWh/m²/day
-  - RMSE: TBD kWh/m²/day
-  - R²: TBD
+  - MAE: 0.533 kWh/m²/day
+  - RMSE: 0.687 kWh/m²/day
+  - R²: 0.665
 - Linear Regression:
-  - MAE: TBD kWh/m²/day
-  - RMSE: TBD kWh/m²/day
-  - R²: TBD
+  - MAE: 0.568 kWh/m²/day
+  - RMSE: 0.720 kWh/m²/day
+  - R²: 0.632
 
 ## Visuals
 - EDA: Daily irradiance over time  
-  ![EDA](assets/eda_irradiance_timeseries.png)
+  ![EDA Irradiance Timeseries](assets/eda_irradiance_timeseries.png)
 - 2023 Actual vs Predicted (test set)  
-  ![Timeseries](assets/timeseries_actual_vs_pred.png)
+  ![Timeseries Actual vs Predicted](assets/timeseries_actual_vs_pred.png)
 - Predicted vs Actual (GBR)  
-  ![Scatter](assets/scatter_pred_vs_actual_gbr.png)
+  ![Scatter Pred vs Actual (GBR)](assets/scatter_pred_vs_actual_gbr.png)
 - Residuals (GBR)  
-  ![Residuals](assets/residuals_hist_gbr.png)
+  ![Residuals Histogram (GBR)](assets/residuals_hist_gbr.png)
 - Feature Importance (GBR)  
-  ![Importance](assets/feature_importance_gbr.png)
+  ![Feature Importance (GBR)](assets/feature_importance_gbr.png)
 
 ## Dataset
 - Source: NASA POWER Project (daily time series; public and free)
-- Variables:
+- Variables used:
   - Target: `ALLSKY_SFC_SW_DWN` (kWh/m²/day)
   - Features: `T2M` (°C), `RH2M` (%), `WS2M` (m/s), `PRECTOTCORR` (mm/day)
 - Example API (Nairobi; 2018–2023):  
-  https://power.larc.nasa.gov/api/temporal/daily/point?parameters=ALLSKY_SFC_SW_DWN,T2M,RH2M,WS2M,PRECTOTCORR&start=20180101&end=20231231&latitude=-1.2921&longitude=36.8219&community=RE&format=CSV&header=true  
-  Note: Change LAT/LON to your city and re-run.
+  https://power.larc.nasa.gov/api/temporal/daily/point?parameters=ALLSKY_SFC_SW_DWN,T2M,RH2M,WS2M,PRECTOTCORR&start=20180101&end=20231231&latitude=-1.2921&longitude=36.8219&community=RE&format=CSV&header=true
+- Note: The notebook downloads data automatically. Change LAT/LON to use a different city.
 
 ## Method
-- Problem: Regression
+- Problem framing: Regression
 - Split: Time-based
   - Train: 2018–2022
   - Test: 2023
 - Features:
-  - Raw: T2M, RH2M, WS2M, PRECTOTCORR
-  - Engineered: `doy`, `sin_doy`, `cos_doy` (seasonality), `lag1` (persistence)
+  - Raw: `T2M`, `RH2M`, `WS2M`, `PRECTOTCORR`
+  - Engineered: `doy`, `sin_doy`, `cos_doy` (seasonality), `lag1` (previous day irradiance)
 - Models:
   - Baseline: Linear Regression (with StandardScaler)
   - Main: GradientBoostingRegressor
-- Metrics: MAE (primary), RMSE, R²
+- Metrics:
+  - Primary: MAE
+  - Secondary: RMSE, R²
 - Visualizations: Timeseries (actual vs predicted), scatter (pred vs actual), residuals histogram, feature importances
 
 ## How to run
-- Option A — Google Colab (recommended)
-  1. Open the notebook (or use the Open in Colab link).
-  2. Run all cells. It will download data, train/evaluate models, and save plots/metrics to `assets/`.
-  3. File → Save a copy in GitHub (commit to your repo).
-  4. Download `assets/*.png` + `metrics.txt` from Colab Files panel and upload to your repo’s `assets/` folder.
 
-- Option B — Local (Jupyter or Python)
-  - Setup: Python 3.9+  
-    `pip install -r requirements.txt`
-  - Run notebook  
-    `jupyter notebook` → open `notebooks/01_solar_potential_regression.ipynb` → Run All
-  - Or run script  
-    `python -c "from src.solar_regression import main; main(lat=-1.2921, lon=36.8219, out_stem='nairobi_power_2018_2023')"`
+### Option A — Google Colab (recommended)
+1) Open the notebook in Colab (link above).
+2) Run all cells. It will:
+   - Download NASA data
+   - Train/evaluate models
+   - Save plots and metrics to `assets/`
+3) File → Save a copy in GitHub (commit the notebook).
+4) Download `assets/*.png` + `assets/metrics.txt` from the Colab Files panel and upload them to your repo’s `assets/` folder.
+
+### Option B — Local (Jupyter or Python)
+- Setup:
+  - Python 3.9+ recommended
+  - `pip install -r requirements.txt`
+- Run the notebook:
+  - `jupyter notebook` → open `notebooks/01_solar_potential_regression.ipynb` → Run All
+- Or run the script:
+  - `python -c "from src.solar_regression import main; main(lat=-1.2921, lon=36.8219, out_stem='nairobi_power_2018_2023')"`
 
 ## Repo structure
+- `notebooks/01_solar_potential_regression.ipynb`
+- `src/solar_regression.py`
+- `assets/`
+  - `eda_irradiance_timeseries.png`
+  - `timeseries_actual_vs_pred.png`
+  - `scatter_pred_vs_actual_gbr.png`
+  - `residuals_hist_gbr.png`
+  - `feature_importance_gbr.png`
+  - `metrics.txt`
+- `requirements.txt`
+- `README.md`
+
+## Ethics & limitations
+- Location-specific: A model trained for one site won’t generalize elsewhere without retraining.
+- Data quality: NASA POWER blends satellite/model estimates; missing or biased periods are possible.
+- Climate variability: Shifts or extremes can reduce accuracy; retrain periodically.
+- Decision support only: Use results to inform planning, not real-time operational control without validation.
+
+## SDG impact
+Accurate solar forecasts help:
+- Plan capacity and storage sizing
+- Improve grid reliability
+- Reduce fossil backup needs  
+This supports SDG 7: Affordable and Clean Energy.
+
+## How to customize city
+- In the notebook or `src/solar_regression.py`, change:
+  - `LAT`, `LON` to your city’s coordinates
+  - Optionally adjust `start`/`end` in `power_url`
+- Re-run to regenerate data, metrics, and plots.
+
+## Assignment deliverables mapping
+- Code: `notebooks/01_solar_potential_regression.ipynb`, `src/solar_regression.py`
+- README: This file, with embedded screenshots and instructions
+- Screenshots/plots: `assets/*.png`
+- Report/article: Problem → Data → Method → Results → Ethics → SDG Impact (link to this repo)
+- Pitch deck: 8 slides (Title, Problem, Data, Approach, Results, Impact, Ethics, Next Steps)
+
+## License & citation
+- Code: MIT (adjust if preferred)
+- Data: “Data courtesy of NASA/POWER Project at NASA Langley Research Center”  
+  NASA POWER API: https://power.larc.nasa.gov
+
+## Requirements
+- pandas
+- numpy
+- scikit-learn
+- matplotlib
+- requests
